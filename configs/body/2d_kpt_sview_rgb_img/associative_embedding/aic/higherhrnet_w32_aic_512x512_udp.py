@@ -51,33 +51,40 @@ model = dict(
                 num_modules=1,
                 num_branches=1,
                 block='BOTTLENECK',
-                num_blocks=(4, ),
-                num_channels=(64, )),
+                num_blocks=(4,),
+                num_channels=(64,),
+            ),
             stage2=dict(
                 num_modules=1,
                 num_branches=2,
                 block='BASIC',
                 num_blocks=(4, 4),
-                num_channels=(32, 64)),
+                num_channels=(32, 64),
+            ),
             stage3=dict(
                 num_modules=4,
                 num_branches=3,
                 block='BASIC',
                 num_blocks=(4, 4, 4),
-                num_channels=(32, 64, 128)),
+                num_channels=(32, 64, 128),
+            ),
             stage4=dict(
                 num_modules=3,
                 num_branches=4,
                 block='BASIC',
                 num_blocks=(4, 4, 4, 4),
-                num_channels=(32, 64, 128, 256))),
+                num_channels=(32, 64, 128, 256),
+            ),
+        ),
     ),
     keypoint_head=dict(
         type='AEHigherResolutionHead',
         in_channels=32,
         num_joints=14,
         tag_per_joint=True,
-        extra=dict(final_conv_kernel=1, ),
+        extra=dict(
+            final_conv_kernel=1,
+        ),
         num_deconv_layers=1,
         num_deconv_filters=[32],
         num_deconv_kernels=[4],
@@ -93,8 +100,10 @@ model = dict(
             push_loss_factor=[0.01, 0.01],
             pull_loss_factor=[0.001, 0.001],
             with_heatmaps_loss=[True, True],
-            heatmaps_loss_factor=[1.0, 1.0])),
-    train_cfg=dict(),
+            heatmaps_loss_factor=[1.0, 1.0],
+        ),
+    ),
+    train_cfg={},
     test_cfg=dict(
         num_joints=channel_cfg['dataset_joints'],
         max_num_people=30,
@@ -112,7 +121,10 @@ model = dict(
         adjust=True,
         refine=True,
         flip_test=True,
-        use_udp=True))
+        use_udp=True,
+    ),
+)
+
 
 train_pipeline = [
     dict(type='LoadImageFromFile'),

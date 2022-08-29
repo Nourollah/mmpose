@@ -84,8 +84,7 @@ def parse_args():
         help='the conda environment used to run the tasks',
         default='pt1.6')
 
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 
 
 def main():
@@ -101,9 +100,9 @@ def main():
     cfg = mmcv.load(args.config)
 
     # number of tasks
-    num_task = 0
-    for i in range(args.priority + 1):
-        num_task += len(cfg['model_list'][f'P{i}'])
+    num_task = sum(
+        len(cfg['model_list'][f'P{i}']) for i in range(args.priority + 1)
+    )
 
     # number of windows need to be created
     num_win = math.ceil(num_task / args.panes_per_window)
@@ -171,7 +170,7 @@ def main():
             else:
                 task_name = osp.splitext(osp.basename(cur_config))[0]
 
-            cur_task_name = args.mode + '_' + task_name
+            cur_task_name = f'{args.mode}_{task_name}'
             cur_work_dir = osp.join(args.root_work_dir, cur_task_name)
 
             # if the port is used, use a random number for port
@@ -216,8 +215,6 @@ def main():
                       f'{cur_task_name} ' + \
                       f'{cur_config} {cur_checkpoint} ' + \
                       f'{py_cmd}'
-                os.system(f'tmux send-keys "{cmd}" "C-m"')
-
             else:
                 cur_gpus = model['train']['gpus'] if 'train' in model.keys(
                 ) and 'gpus' in model['train'].keys(
@@ -258,7 +255,7 @@ def main():
                       f'{cur_task_name} ' + \
                       f'{cur_config} {cur_work_dir} ' + \
                       f'{py_cmd}'
-                os.system(f'tmux send-keys "{cmd}" "C-m"')
+            os.system(f'tmux send-keys "{cmd}" "C-m"')
 
             print(f'port used in task {cur_task} is: {cur_port}')
             cur_task += 1

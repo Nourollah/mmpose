@@ -59,8 +59,9 @@ model = dict(
             pull_loss_factor=[0.001],
             with_heatmaps_loss=[True],
             heatmaps_loss_factor=[1.0],
-        )),
-    train_cfg=dict(),
+        ),
+    ),
+    train_cfg={},
     test_cfg=dict(
         num_joints=channel_cfg['dataset_joints'],
         max_num_people=30,
@@ -78,7 +79,10 @@ model = dict(
         ignore_too_much=False,
         adjust=True,
         refine=True,
-        flip_test=True))
+        flip_test=True,
+    ),
+)
+
 
 train_pipeline = [
     dict(type='LoadImageFromFile'),

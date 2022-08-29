@@ -75,8 +75,7 @@ def collate_metrics(keys):
                     if key[i] == '<':
                         while key[i] != '>':
                             i += 1
-                    # omit bold or italic
-                    elif key[i] == '*' or key[i] == '_':
+                    elif key[i] in ['*', '_']:
                         used_metric += ' '
                     else:
                         used_metric += key[i]
@@ -87,9 +86,11 @@ def collate_metrics(keys):
                     match = re.search(r'\d+', used_metric)
                     if match is not None:
                         l, r = match.span(0)
-                        digits = match.group(0)
-                        used_metric = used_metric[:l] + '@' + \
-                            str(int(digits) * 0.01) + used_metric[r:]
+                        digits = match[0]
+                        used_metric = (
+                            f'{used_metric[:l]}@' + str(int(digits) * 0.01)
+                        ) + used_metric[r:]
+
                 used_metrics.append(used_metric)
                 metric_idx.append(idx)
                 break
@@ -156,15 +157,13 @@ def parse_config_path(path):
     }
     task_readable = task2readable.get(task)
 
-    model_info = {
+    return {
         'target': target,
         'task': task_readable,
         'algorithm': algorithm,
         'dataset': dataset,
         'model': model,
     }
-
-    return model_info
 
 
 def parse_md(md_file):
@@ -229,7 +228,6 @@ def parse_md(md_file):
 
                 i = details_end + 1
 
-            # parse table
             elif lines[i][0] == '|' and i + 1 < len(lines) and \
                     lines[i + 1][:3] == '| :':
                 cols = [col.strip() for col in lines[i].split('|')][1:-1]
@@ -275,10 +273,12 @@ def parse_md(md_file):
                     if params_idx != -1:
                         metadata['Parameters'] = float(line[params_idx])
 
-                    metrics = {}
-                    for metric_name, metric_idx in zip(metric_name_list,
-                                                       metric_idx_list):
-                        metrics[metric_name] = float(line[metric_idx])
+                    metrics = {
+                        metric_name: float(line[metric_idx])
+                        for metric_name, metric_idx in zip(
+                            metric_name_list, metric_idx_list
+                        )
+                    }
 
                     model = {
                         'Name':
@@ -305,9 +305,8 @@ def parse_md(md_file):
                 i += 1
 
     result = {'Collections': [collection], 'Models': models}
-    yml_file = osp.splitext(md_file)[0] + '.yml'
-    is_different = dump_yaml_and_check_difference(result, yml_file)
-    return is_different
+    yml_file = f'{osp.splitext(md_file)[0]}.yml'
+    return dump_yaml_and_check_difference(result, yml_file)
 
 
 def update_model_index():
@@ -327,10 +326,7 @@ def update_model_index():
         ]
     }
     model_index_file = osp.join(MMPOSE_ROOT, 'model-index.yml')
-    is_different = dump_yaml_and_check_difference(model_index,
-                                                  model_index_file)
-
-    return is_different
+    return dump_yaml_and_check_difference(model_index, model_index_file)
 
 
 if __name__ == '__main__':

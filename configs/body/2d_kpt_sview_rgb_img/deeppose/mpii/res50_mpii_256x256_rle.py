@@ -32,7 +32,7 @@ channel_cfg = dict(
 model = dict(
     type='TopDown',
     pretrained='torchvision://resnet50',
-    backbone=dict(type='ResNet', depth=50, num_stages=4, out_indices=(3, )),
+    backbone=dict(type='ResNet', depth=50, num_stages=4, out_indices=(3,)),
     neck=dict(type='GlobalAveragePooling'),
     keypoint_head=dict(
         type='DeepposeRegressionHead',
@@ -42,10 +42,14 @@ model = dict(
             type='RLELoss',
             use_target_weight=True,
             size_average=True,
-            residual=True),
-        out_sigma=True),
-    train_cfg=dict(),
-    test_cfg=dict(flip_test=True))
+            residual=True,
+        ),
+        out_sigma=True,
+    ),
+    train_cfg={},
+    test_cfg=dict(flip_test=True),
+)
+
 
 data_cfg = dict(
     image_size=[256, 256],

@@ -43,7 +43,8 @@ model = dict(
         num_stages=3,
         num_units=4,
         num_blocks=[3, 4, 6, 3],
-        norm_cfg=dict(type='BN')),
+        norm_cfg=dict(type='BN'),
+    ),
     keypoint_head=dict(
         type='TopdownHeatmapMSMUHead',
         out_shape=(64, 48),
@@ -53,21 +54,34 @@ model = dict(
         num_units=4,
         use_prm=False,
         norm_cfg=dict(type='BN'),
-        loss_keypoint=([
-            dict(
-                type='JointsMSELoss', use_target_weight=True, loss_weight=0.25)
-        ] * 3 + [
-            dict(
-                type='JointsOHKMMSELoss',
-                use_target_weight=True,
-                loss_weight=1.)
-        ]) * 3),
-    train_cfg=dict(),
+        loss_keypoint=(
+            [
+                dict(
+                    type='JointsMSELoss',
+                    use_target_weight=True,
+                    loss_weight=0.25,
+                )
+            ]
+            * 3
+            + [
+                dict(
+                    type='JointsOHKMMSELoss',
+                    use_target_weight=True,
+                    loss_weight=1.0,
+                )
+            ]
+        )
+        * 3,
+    ),
+    train_cfg={},
     test_cfg=dict(
         flip_test=True,
         post_process='megvii',
         shift_heatmap=False,
-        modulate_kernel=5))
+        modulate_kernel=5,
+    ),
+)
+
 
 data_cfg = dict(
     image_size=[192, 256],

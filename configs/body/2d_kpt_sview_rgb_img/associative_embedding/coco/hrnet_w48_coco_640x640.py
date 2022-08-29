@@ -52,26 +52,31 @@ model = dict(
                 num_modules=1,
                 num_branches=1,
                 block='BOTTLENECK',
-                num_blocks=(4, ),
-                num_channels=(64, )),
+                num_blocks=(4,),
+                num_channels=(64,),
+            ),
             stage2=dict(
                 num_modules=1,
                 num_branches=2,
                 block='BASIC',
                 num_blocks=(4, 4),
-                num_channels=(48, 96)),
+                num_channels=(48, 96),
+            ),
             stage3=dict(
                 num_modules=4,
                 num_branches=3,
                 block='BASIC',
                 num_blocks=(4, 4, 4),
-                num_channels=(48, 96, 192)),
+                num_channels=(48, 96, 192),
+            ),
             stage4=dict(
                 num_modules=3,
                 num_branches=4,
                 block='BASIC',
                 num_blocks=(4, 4, 4, 4),
-                num_channels=(48, 96, 192, 384))),
+                num_channels=(48, 96, 192, 384),
+            ),
+        ),
     ),
     keypoint_head=dict(
         type='AESimpleHead',
@@ -80,7 +85,9 @@ model = dict(
         num_deconv_layers=0,
         tag_per_joint=True,
         with_ae_loss=[True],
-        extra=dict(final_conv_kernel=1, ),
+        extra=dict(
+            final_conv_kernel=1,
+        ),
         loss_keypoint=dict(
             type='MultiLossFactory',
             num_joints=17,
@@ -90,8 +97,10 @@ model = dict(
             push_loss_factor=[0.001],
             pull_loss_factor=[0.001],
             with_heatmaps_loss=[True],
-            heatmaps_loss_factor=[1.0])),
-    train_cfg=dict(),
+            heatmaps_loss_factor=[1.0],
+        ),
+    ),
+    train_cfg={},
     test_cfg=dict(
         num_joints=channel_cfg['dataset_joints'],
         max_num_people=30,
@@ -109,7 +118,10 @@ model = dict(
         ignore_too_much=False,
         adjust=True,
         refine=True,
-        flip_test=True))
+        flip_test=True,
+    ),
+)
+
 
 train_pipeline = [
     dict(type='LoadImageFromFile'),

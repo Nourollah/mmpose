@@ -31,18 +31,22 @@ channel_cfg = dict(
 model = dict(
     type='TopDown',
     pretrained='mmcls://mobilenet_v2',
-    backbone=dict(type='MobileNetV2', widen_factor=1., out_indices=(7, )),
+    backbone=dict(type='MobileNetV2', widen_factor=1.0, out_indices=(7,)),
     keypoint_head=dict(
         type='TopdownHeatmapSimpleHead',
         in_channels=1280,
         out_channels=channel_cfg['num_output_channels'],
-        loss_keypoint=dict(type='JointsMSELoss', use_target_weight=True)),
-    train_cfg=dict(),
+        loss_keypoint=dict(type='JointsMSELoss', use_target_weight=True),
+    ),
+    train_cfg={},
     test_cfg=dict(
         flip_test=True,
         post_process='default',
         shift_heatmap=True,
-        modulate_kernel=11))
+        modulate_kernel=11,
+    ),
+)
+
 
 data_cfg = dict(
     image_size=[192, 256],
