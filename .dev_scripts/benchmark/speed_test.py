@@ -65,8 +65,7 @@ def parse_args():
     parser.add_argument(
         '--num-warmup', type=int, help='warmup iterations', default=5)
 
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 
 
 def main():

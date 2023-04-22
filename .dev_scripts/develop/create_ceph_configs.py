@@ -34,18 +34,13 @@ def update_ceph_config(filename, args, dry_run=False):
                    '\'data/\': \'openmmlab:s3://openmmlab/datasets/pose/\''
                    '})\n')
     try:
-        # Update evaluation configs
-        match = re.search(r'evaluation = dict\(', content)
-        if match:
+        if match := re.search(r'evaluation = dict\(', content):
             insert_pos = match.end()
-            content = content[:insert_pos] + f'out_dir={work_dir}, ' + content[
-                insert_pos:]
+            content = f'{content[:insert_pos]}out_dir={work_dir}, {content[insert_pos:]}'
         else:
             ceph_config += f'evaluation = dict(out_dir={work_dir})\n'
 
-        # Update checkpoint configs
-        match = re.search(r'checkpoint_config = dict\(', content, re.S)
-        if match:
+        if match := re.search(r'checkpoint_config = dict\(', content, re.S):
             insert_pos = match.end()
             content = (
                 content[:insert_pos] +
@@ -55,12 +50,11 @@ def update_ceph_config(filename, args, dry_run=False):
             ceph_config += ('checkpoint_config = dict(max_keep_ckpts=2, '
                             f'out_dir={work_dir})\n')
 
-        # Update log configs
-        match = re.search(r'dict\(.*?type=\'TextLoggerHook\'', content, re.S)
-        if match:
+        if match := re.search(
+            r'dict\(.*?type=\'TextLoggerHook\'', content, re.S
+        ):
             insert_pos = match.end()
-            content = content[:insert_pos] + f'out_dir={work_dir}' + content[
-                insert_pos:]
+            content = f'{content[:insert_pos]}out_dir={work_dir}{content[insert_pos:]}'
         else:
             content += ('log_config = dict(hooks=[dict(type=\'TextLoggerHook'
                         f'\', out_dir={work_dir})])')
@@ -82,8 +76,7 @@ def update_ceph_config(filename, args, dry_run=False):
 
         # Add ceph config
         insert_pos = 0
-        match = re.search(r'_base_ = \[.*?\]\n', content, re.S)
-        if match:
+        if match := re.search(r'_base_ = \[.*?\]\n', content, re.S):
             # Insert Ceph configs after _base_
             insert_pos = match.end()
             content = content[:insert_pos] + ceph_config + content[insert_pos:]

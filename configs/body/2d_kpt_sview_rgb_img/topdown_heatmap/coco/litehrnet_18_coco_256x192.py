@@ -48,22 +48,30 @@ model = dict(
                     (40, 80),
                     (40, 80, 160),
                     (40, 80, 160, 320),
-                )),
+                ),
+            ),
             with_head=True,
-        )),
+        ),
+    ),
     keypoint_head=dict(
         type='TopdownHeatmapSimpleHead',
         in_channels=40,
         out_channels=channel_cfg['num_output_channels'],
         num_deconv_layers=0,
-        extra=dict(final_conv_kernel=1, ),
-        loss_keypoint=dict(type='JointsMSELoss', use_target_weight=True)),
-    train_cfg=dict(),
+        extra=dict(
+            final_conv_kernel=1,
+        ),
+        loss_keypoint=dict(type='JointsMSELoss', use_target_weight=True),
+    ),
+    train_cfg={},
     test_cfg=dict(
         flip_test=True,
         post_process='default',
         shift_heatmap=True,
-        modulate_kernel=11))
+        modulate_kernel=11,
+    ),
+)
+
 
 data_cfg = dict(
     image_size=[192, 256],

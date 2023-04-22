@@ -36,8 +36,7 @@ def parse_args():
         '-r',
         help='the root working directory to store logs')
 
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 
 
 def main():
@@ -74,8 +73,9 @@ def main():
                 model.forward = model.forward_dummy
             else:
                 raise NotImplementedError(
-                    'FLOPs counter is currently not currently supported '
-                    'with {}'.format(model.__class__.__name__))
+                    f'FLOPs counter is currently not currently supported with {model.__class__.__name__}'
+                )
+
 
             flops, params = get_model_complexity_info(
                 model, input_shape, print_per_layer_stat=False)

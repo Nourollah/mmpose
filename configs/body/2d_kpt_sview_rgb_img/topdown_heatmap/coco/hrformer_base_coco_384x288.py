@@ -54,10 +54,11 @@ model = dict(
                 num_modules=1,
                 num_branches=1,
                 block='BOTTLENECK',
-                num_blocks=(2, ),
-                num_channels=(64, ),
+                num_blocks=(2,),
+                num_channels=(64,),
                 num_heads=[2],
-                mlp_ratios=[4]),
+                mlp_ratios=[4],
+            ),
             stage2=dict(
                 num_modules=1,
                 num_branches=2,
@@ -66,7 +67,8 @@ model = dict(
                 num_channels=(78, 156),
                 num_heads=[2, 4],
                 mlp_ratios=[4, 4],
-                window_sizes=[7, 7]),
+                window_sizes=[7, 7],
+            ),
             stage3=dict(
                 num_modules=4,
                 num_branches=3,
@@ -75,7 +77,8 @@ model = dict(
                 num_channels=(78, 156, 312),
                 num_heads=[2, 4, 8],
                 mlp_ratios=[4, 4, 4],
-                window_sizes=[7, 7, 7]),
+                window_sizes=[7, 7, 7],
+            ),
             stage4=dict(
                 num_modules=2,
                 num_branches=4,
@@ -84,20 +87,29 @@ model = dict(
                 num_channels=(78, 156, 312, 624),
                 num_heads=[2, 4, 8, 16],
                 mlp_ratios=[4, 4, 4, 4],
-                window_sizes=[7, 7, 7, 7]))),
+                window_sizes=[7, 7, 7, 7],
+            ),
+        ),
+    ),
     keypoint_head=dict(
         type='TopdownHeatmapSimpleHead',
         in_channels=78,
         out_channels=channel_cfg['num_output_channels'],
         num_deconv_layers=0,
-        extra=dict(final_conv_kernel=1, ),
-        loss_keypoint=dict(type='JointsMSELoss', use_target_weight=True)),
-    train_cfg=dict(),
+        extra=dict(
+            final_conv_kernel=1,
+        ),
+        loss_keypoint=dict(type='JointsMSELoss', use_target_weight=True),
+    ),
+    train_cfg={},
     test_cfg=dict(
         flip_test=True,
         post_process='default',
         shift_heatmap=True,
-        modulate_kernel=17))
+        modulate_kernel=17,
+    ),
+)
+
 
 data_root = 'data/coco'
 data_cfg = dict(

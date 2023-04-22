@@ -43,13 +43,17 @@ model = dict(
         type='TopdownHeatmapSimpleHead',
         in_channels=2048,
         out_channels=channel_cfg['num_output_channels'],
-        loss_keypoint=dict(type='JointsMSELoss', use_target_weight=True)),
-    train_cfg=dict(),
+        loss_keypoint=dict(type='JointsMSELoss', use_target_weight=True),
+    ),
+    train_cfg={},
     test_cfg=dict(
         flip_test=True,
         post_process='default',
         shift_heatmap=True,
-        modulate_kernel=11))
+        modulate_kernel=11,
+    ),
+)
+
 
 data_cfg = dict(
     image_size=[192, 256],
